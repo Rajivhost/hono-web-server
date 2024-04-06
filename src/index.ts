@@ -36,9 +36,6 @@ app.post('/users', async (c) => {
   const user = validateResult.data
 
   users.add(user)
-  users.add({
-    gender: ''
-  })
 
   return c.json(null)
 })
