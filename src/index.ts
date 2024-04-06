@@ -27,7 +27,7 @@ app.get("/users", (c) => {
 	return c.json(Array.from(users));
 });
 
-app.post("/users", zValidator("json", User), async (c) => {
+app.post("/users", zValidator("json", UserInput), async (c) => {
 	const input = await c.req.json();
 
 	// const validateResult = await User.safeParseAsync(input)
