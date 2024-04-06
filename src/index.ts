@@ -5,10 +5,14 @@ import { z } from "zod";
 
 const app = new Hono().basePath("v1");
 
-const User = z.object({
+const UserInput = z.object({
 	first_name: z.string().optional(),
 	last_name: z.string().min(1, "At least 1 char").max(50),
 	gender: z.enum(["MALE", "FEMALE"]),
+});
+
+const User = UserInput.extend({
+	user_id: z.string().min(1),
 });
 
 type User = z.infer<typeof User>;
@@ -36,10 +40,13 @@ app.post("/users", zValidator("json", User), async (c) => {
 
 	// const user = validateResult.data
 
-	const user: User = input;
+	const user: User = {
+		...input,
+		user_id: "user_1234",
+	};
 
 	users.add(user);
-  
+
 	return c.json(null);
 });
 

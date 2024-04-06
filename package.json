@@ -1,9 +1,7 @@
 {
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "format": "pnpm biome check --apply src/index.ts && pnpm biome format src/index.ts",
-    "lint": "pnpm biome lint src/index.ts",
-    "check": "pnpm biome check --apply src/index.ts"
+    "lint": "pnpm biome check --apply src/index.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.9.1",
