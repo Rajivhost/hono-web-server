@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
+import { zValidator } from '@hono/zod-validator'
 
 const app = new Hono().basePath('v1')
 
@@ -22,18 +23,21 @@ app.get('/users', (c) => {
   return c.json(Array.from(users))
 })
 
-app.post('/users', async (c) => {
+app.post('/users', zValidator('json', User),
+async (c) => {
   const input = await c.req.json()
 
-  const validateResult = await User.safeParseAsync(input)
+  // const validateResult = await User.safeParseAsync(input)
 
-  if(!validateResult.success) {
-    return c.json({
-      message: `${validateResult.error.errors[0].path} ==> ${validateResult.error.errors[0].message}`
-    }, 400)
-  }
+  // if(!validateResult.success) {
+  //   return c.json({
+  //     message: `${validateResult.error.errors[0].path} ==> ${validateResult.error.errors[0].message}`
+  //   }, 400)
+  // }
 
-  const user = validateResult.data
+  // const user = validateResult.data
+
+  const user: User = input
 
   users.add(user)
 
