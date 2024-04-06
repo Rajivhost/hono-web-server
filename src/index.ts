@@ -1,12 +1,16 @@
+import { z } from 'zod'
 import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
 
 const app = new Hono().basePath('v1')
 
-type User = {
-  name: string
-  age: number
-}
+const User = z.object({
+  first_name: z.string().optional(),
+  last_name: z.string().min(1, 'At least 1 char').max(50),
+  gender: z.enum(['MALE', 'FEMALE'])
+})
+
+type User = z.infer<typeof User>
 
 const users = new Set<User>()
 
@@ -21,7 +25,20 @@ app.get('/users', (c) => {
 app.post('/users', async (c) => {
   const input = await c.req.json()
 
-  users.add(input)
+  const validateResult = await User.safeParseAsync(input)
+
+  if(!validateResult.success) {
+    return c.json({
+      message: `${validateResult.error.errors[0].path} ==> ${validateResult.error.errors[0].message}`
+    }, 400)
+  }
+
+  const user = validateResult.data
+
+  users.add(user)
+  users.add({
+    gender: ''
+  })
 
   return c.json(null)
 })
